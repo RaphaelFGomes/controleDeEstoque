@@ -109,6 +109,7 @@ public class EstoqueResources {
 		RespostaDTO resposta = null;
 		String message = "";
 
+		
 		if (tipoBebida != 1 && tipoBebida != 2) {
 			message = "Não tem seção disponível para venda do tipo de bebida " + tipoBebida;
 			resposta = new RespostaDTO()
