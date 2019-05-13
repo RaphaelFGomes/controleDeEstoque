@@ -3,9 +3,11 @@ package com.raphael.springbootionic.services;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,26 +24,31 @@ public class EstoqueService {
 
 	@Autowired
 	private EstoqueRepositorio repo;
+	
+	@Autowired
+	private HistoricoService historicoService;
 
 	@Transactional
 	public Estoque insert(Estoque obj) {
+		historicoService.insert(obj, "Entrada");
 		return repo.save(obj);
 	}
 
 	@Transactional
-	public void deleteByIdAndSecao(Integer id, Integer secao) {
-		if (repo.deleteByIdAndSecao(id, secao) == 0) {
-			throw new ObjectNotFoundException("Não existe o ID dessa bebida na seção: " + secao + "!");
+	public void deleteById(Integer id) {
+		try {
+			Estoque estoque = this.consultBebibaPorId(id);
+			repo.deleteById(id);
+			historicoService.insert(estoque, "Saída");
+		}catch (EmptyResultDataAccessException e) {
+			throw new ObjectNotFoundException("Não existe bebida com esse ID: " + id + "!");
 		}
 	}
 	
-	public Estoque consultBebibaPorIdESecao(Integer id, Integer secao) {
-		Estoque obj = repo.findByIdAndSecao(id, secao);
-		if (obj == null) {
-			throw new ObjectNotFoundException("Não existe o ID dessa bebida na seção: " + secao + "!");
-		}
-		return obj;
-	 }
+	public Estoque consultBebibaPorId(Integer id) {
+		Optional<Estoque> obj = repo.findById(id);
+		return obj.orElseThrow(() -> new ObjectNotFoundException("Não existe bebida com esse ID: " + id + "!"));
+	}
 	
 	public List<Estoque> consultaEstoquePorSecao(Integer secao) {
 		List<Estoque> listEstoque = repo.findBySecao(secao);
@@ -71,29 +78,84 @@ public class EstoqueService {
 		return volumeSecao;
 	 }
 	
-	public List<SecaoDisponivelDTO> consultaSecoesDisponiveisPorTipoBebidaSecao(Integer tipoBebida, Integer volume) {
+	public List<SecaoDisponivelDTO> consultaSecoesDisponiveisPorVolume(Integer volume) {
+		List<SecaoDisponivelDTO> secoesDisponiveis = new ArrayList<>();
+		SecaoDisponivelDTO secaoDisponivelDTO = null;
+
+		for (int i = 1; i <= 5; i++) {
+			if (volume >= 0 && volume <= 500) {
+				int volumeSecao = 0;
+				try {
+					volumeSecao = repo.findVolumeBySecao(i);
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+
+				if (volumeSecao == 0) {
+					secaoDisponivelDTO = new SecaoDisponivelDTO()
+							.setSecao(i)
+							.setVolumeAtual(0)
+							.setVolumeDisponivelString("500 para bebida Alcoólica e 400 para Não Alcoólica")
+							.setTipoBebida(3)
+							.setTipoBebidaDescricao(TipoBebida.toEnum(3).getDescricao());
+					secoesDisponiveis.add(secaoDisponivelDTO);
+				} else {
+					int tipoBebidaSecao = 0;
+					try {
+						tipoBebidaSecao = repo.findTipoBebidaBySecao(i);
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
+					}
+					String tipoBebidaDescricao = tipoBebidaSecao == 1 ? TipoBebida.toEnum(1).getDescricao()
+							: TipoBebida.toEnum(2).getDescricao();
+					// Alcoólica
+					if (tipoBebidaSecao == 1 && (volumeSecao + volume) <= 500) {
+						secaoDisponivelDTO = new SecaoDisponivelDTO()
+								.setSecao(i)
+								.setVolumeAtual(volumeSecao)
+								.setVolumeDisponivel(500 - volumeSecao)
+								.setTipoBebida(tipoBebidaSecao)
+								.setTipoBebidaDescricao(tipoBebidaDescricao);
+						secoesDisponiveis.add(secaoDisponivelDTO);
+					}
+					// Não Alcoólica
+					else {
+						if ((volumeSecao + volume) <= 400) {
+							secaoDisponivelDTO = new SecaoDisponivelDTO()
+									.setSecao(i).setVolumeAtual(volumeSecao)
+									.setVolumeDisponivel(400 - volumeSecao)
+									.setTipoBebida(tipoBebidaSecao)
+									.setTipoBebidaDescricao(tipoBebidaDescricao);
+							secoesDisponiveis.add(secaoDisponivelDTO);
+						}
+					}
+				}
+			}
+		}
+		return secoesDisponiveis;
+	}
+	
+	public List<SecaoDisponivelDTO> consultaSecoesDisponiveisVendaPorTipoBebida(Integer tipoBebida) {
 		List<SecaoDisponivelDTO> secoesDisponiveis = new ArrayList<>();
 		
 		SecaoDisponivelDTO secaoDisponivelDTO = null;
 		
 		for (int i = 1; i <= 5; i++) {
 		try {
-			int volumeSecao1 = repo.findVolumeByTipoBebidaAndSecao(tipoBebida, i);
+			int volumeSecao = repo.findVolumeByTipoBebidaAndSecao(tipoBebida, i);
 			// Alcoólica
-			if (tipoBebida == 1 && (volumeSecao1 + volume) <= 500) {
+			if (tipoBebida == 1 && volumeSecao > 0) {
 				secaoDisponivelDTO = new SecaoDisponivelDTO()
 						.setSecao(i)
-						.setVolumeAtual(volumeSecao1)
-						.setVolumeDisponivel(500 - volumeSecao1);
+						.setVolumeAtual(volumeSecao);
 				secoesDisponiveis.add(secaoDisponivelDTO);
 			}
 			// Não Alcoólica
 			else {
-				if ((volumeSecao1 + volume) <= 400) {
+				if (volumeSecao > 0) {
 					secaoDisponivelDTO = new SecaoDisponivelDTO()
 							.setSecao(i)
-							.setVolumeAtual(volumeSecao1)
-							.setVolumeDisponivel(400 - volumeSecao1);
+							.setVolumeAtual(volumeSecao);
 					secoesDisponiveis.add(secaoDisponivelDTO);
 				} 
 			}
@@ -146,52 +208,5 @@ public class EstoqueService {
 		}
 		return listEstoqueDTO;
 	}
-
-	/*
-	 * public Client find(Integer id) { Optional<Client> obj = repo.findById(id);
-	 * return obj.orElseThrow(() -> new ObjectNotFoundException(
-	 * "Object not found! Id: " + id + ", Type: " + Client.class.getName())); }
-	 * 
-	 * 
-	 * @Transactional public Client insert(Client obj) { obj.setId(null); obj =
-	 * repo.save(obj); addressRepository.saveAll(obj.getAddresses()); return obj; }
-	 */
-	/*
-	 * public Client update(Client obj) { Client newObj = find(obj.getId());
-	 * updateData(newObj, obj); return repo.save(newObj); }
-	 * 
-	 * public void delete(Integer id) { find(id); try { repo.deleteById(id); } catch
-	 * (DataIntegrityViolationException e) { throw new
-	 * DataIntegrityException("Is not possible delete this client that contains requests!"
-	 * ); }
-	 * 
-	 * }
-	 * 
-	 * public List<Client> findAll() { return repo.findAll(); }
-	 * 
-	 * public Page<Client> findPage(Integer page, Integer linesPerPage, String
-	 * direction, String orderBy) { PageRequest pagerequest = PageRequest.of(page,
-	 * linesPerPage, Direction.valueOf(direction), orderBy); return
-	 * repo.findAll(pagerequest); }
-	 * 
-	 * public Client fromDTO(ClientDTO objDTO) { return new Client(objDTO.getId(),
-	 * objDTO.getName(), objDTO.getEmail(), null, null); }
-	 * 
-	 * public Client fromDTO(ClientNewDTO objDTO) { Client cli = new Client(null,
-	 * objDTO.getName(), objDTO.getEmail(), objDTO.getCode(),
-	 * ClientType.toEnum(objDTO.getType())); City cit = new City(objDTO.getCityId(),
-	 * null, null); Address addr = new Address(null, objDTO.getPublicPlace(),
-	 * objDTO.getNumber(), objDTO.getComplement(), objDTO.getNeighborhood(),
-	 * objDTO.getZipCode(), cli, cit); cli.getAddresses().add(addr);
-	 * cli.getPhoneNumbers().add(objDTO.getPhone1()); if (objDTO.getPhone2() !=
-	 * null) { cli.getPhoneNumbers().add(objDTO.getPhone2()); }
-	 * 
-	 * if (objDTO.getPhone3() != null) {
-	 * cli.getPhoneNumbers().add(objDTO.getPhone3()); }
-	 * 
-	 * return cli; }
-	 * 
-	 * private void updateData(Client newObj, Client obj) {
-	 * newObj.setName(obj.getName()); newObj.setEmail(obj.getEmail()); }
-	 */
+	
 }

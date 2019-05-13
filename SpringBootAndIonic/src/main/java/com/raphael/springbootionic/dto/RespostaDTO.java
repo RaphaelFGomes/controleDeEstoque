@@ -4,33 +4,17 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RespostaDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	//@JsonInclude(Include.NON_NULL)
+	
 	private String message;
-	
-	//@JsonInclude(Include.NON_NULL)
 	private Integer idBebida;
-	
-	//@JsonInclude(Include.NON_NULL)
 	private Integer tipoBebida;
-	
-	//@JsonInclude(Include.NON_NULL)
 	private String tipoBebidaDescricao;
-	
-	//@JsonInclude(Include.NON_NULL)
 	private Integer secao;
-	
-	//@JsonInclude(Include.NON_NULL)
 	private Integer volumeTotal;
-	
-	//@JsonInclude(JsonInclude.Include.NON_NULL)
 	private List<SecaoDisponivelDTO> secoesDisponiveis = null;
 
 	public RespostaDTO() {

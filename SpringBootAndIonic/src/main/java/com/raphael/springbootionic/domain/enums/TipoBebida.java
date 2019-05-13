@@ -2,7 +2,7 @@ package com.raphael.springbootionic.domain.enums;
 
 public enum TipoBebida {
 
-	ALCOOLICA(1, "Alcoólica"), NAO_ALCOOLICA(2, "Não Alcoólica");
+	ALCOOLICA(1, "Alcoólica"), NAO_ALCOOLICA(2, "Não Alcoólica"), TODAS(3, "Alcoólica ou Não Alcoólica");
 
 	private int codigo;
 	private String descricao;

@@ -1,14 +1,11 @@
 package com.raphael.springbootionic.domain;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class Historico implements Serializable {
@@ -17,12 +14,12 @@ public class Historico implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
-	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
-	private Date horario;
+	private String horario;
 	private String tipoRequisicao;
-	private Double volume;
-	private Bebida bedida;
+	private Integer volume;
+	private String nomeBebida;
+	private String marcaBebida;
+	private Integer tipoBebida;
 	private Integer secao;
 	private String responsavel;
 
@@ -30,56 +27,31 @@ public class Historico implements Serializable {
 
 	}
 
-	public Historico(Integer id, Date horario, String tipoRequisicao, Double volume, Bebida bedida, Integer secao,
-			String responsavel) {
-		super();
-		this.id = id;
-		this.horario = horario;
-		this.tipoRequisicao = tipoRequisicao;
-		this.volume = volume;
-		this.bedida = bedida;
-		this.secao = secao;
-		this.responsavel = responsavel;
-	}
-
 	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public Historico setId(Integer id) {
 		this.id = id;
+		return this;
 	}
-
-	public Date getHorario() {
-		return horario;
-	}
-
-	public void setHorario(Date horario) {
-		this.horario = horario;
-	}
-
+	
 	public String getTipoRequisicao() {
 		return tipoRequisicao;
 	}
 
-	public void setTipoRequisicao(String tipoRequisicao) {
+	public Historico setTipoRequisicao(String tipoRequisicao) {
 		this.tipoRequisicao = tipoRequisicao;
+		return this;
 	}
 
-	public Double getVolume() {
+	public Integer getVolume() {
 		return volume;
 	}
 
-	public void setVolume(Double volume) {
+	public Historico setVolume(Integer volume) {
 		this.volume = volume;
-	}
-
-	public Bebida getBedida() {
-		return bedida;
-	}
-
-	public void setBedida(Bebida bedida) {
-		this.bedida = bedida;
+		return this;
 	}
 
 	public Integer getSecao() {
@@ -94,19 +66,63 @@ public class Historico implements Serializable {
 		return responsavel;
 	}
 
-	public void setResponsavel(String responsavel) {
+	public Historico setResponsavel(String responsavel) {
 		this.responsavel = responsavel;
+		return this;
+	}
+
+	public String getNomeBebida() {
+		return nomeBebida;
+	}
+
+	public Historico setNomeBebida(String nomeBebida) {
+		this.nomeBebida = nomeBebida;
+		return this;
+	}
+
+	public String getMarcaBebida() {
+		return marcaBebida;
+	}
+
+	public Historico setMarcaBebida(String marcaBebida) {
+		this.marcaBebida = marcaBebida;
+		return this;
+	}
+
+	public Integer getTipoBebida() {
+		return tipoBebida;
+	}
+
+	public Historico setTipoBebida(Integer tipoBebida) {
+		this.tipoBebida = tipoBebida;
+		return this;
+	}
+
+	public Historico setSecao(Integer secao) {
+		this.secao = secao;
+		return this;
+	}
+
+	public String getHorario() {
+		return horario;
+	}
+
+	public Historico setHorario(String horario) {
+		this.horario = horario;
+		return this;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((bedida == null) ? 0 : bedida.hashCode());
 		result = prime * result + ((horario == null) ? 0 : horario.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((secao == null) ? 0 : secao.hashCode());
+		result = prime * result + ((marcaBebida == null) ? 0 : marcaBebida.hashCode());
+		result = prime * result + ((nomeBebida == null) ? 0 : nomeBebida.hashCode());
 		result = prime * result + ((responsavel == null) ? 0 : responsavel.hashCode());
+		result = prime * result + ((secao == null) ? 0 : secao.hashCode());
+		result = prime * result + ((tipoBebida == null) ? 0 : tipoBebida.hashCode());
 		result = prime * result + ((tipoRequisicao == null) ? 0 : tipoRequisicao.hashCode());
 		result = prime * result + ((volume == null) ? 0 : volume.hashCode());
 		return result;
@@ -121,11 +137,6 @@ public class Historico implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Historico other = (Historico) obj;
-		if (bedida == null) {
-			if (other.bedida != null)
-				return false;
-		} else if (!bedida.equals(other.bedida))
-			return false;
 		if (horario == null) {
 			if (other.horario != null)
 				return false;
@@ -136,15 +147,30 @@ public class Historico implements Serializable {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (secao == null) {
-			if (other.secao != null)
+		if (marcaBebida == null) {
+			if (other.marcaBebida != null)
 				return false;
-		} else if (!secao.equals(other.secao))
+		} else if (!marcaBebida.equals(other.marcaBebida))
+			return false;
+		if (nomeBebida == null) {
+			if (other.nomeBebida != null)
+				return false;
+		} else if (!nomeBebida.equals(other.nomeBebida))
 			return false;
 		if (responsavel == null) {
 			if (other.responsavel != null)
 				return false;
 		} else if (!responsavel.equals(other.responsavel))
+			return false;
+		if (secao == null) {
+			if (other.secao != null)
+				return false;
+		} else if (!secao.equals(other.secao))
+			return false;
+		if (tipoBebida == null) {
+			if (other.tipoBebida != null)
+				return false;
+		} else if (!tipoBebida.equals(other.tipoBebida))
 			return false;
 		if (tipoRequisicao == null) {
 			if (other.tipoRequisicao != null)
