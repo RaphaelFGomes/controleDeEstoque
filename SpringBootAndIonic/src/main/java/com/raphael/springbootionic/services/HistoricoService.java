@@ -1,6 +1,7 @@
 package com.raphael.springbootionic.services;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class HistoricoService {
 		Historico historico = new Historico()
 				.setTipoRequisicao(tipoRequisicao)
 				.setHorario(formatter.format(currentDate))
+				.setHorarioLocalDate(LocalDate.now())
 				.setResponsavel(estoque.getResponsavel())
 				.setVolume(estoque.getVolume())
 				.setSecao(estoque.getSecao())

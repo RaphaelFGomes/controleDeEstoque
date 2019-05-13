@@ -2,8 +2,6 @@ package com.raphael.springbootionic.dto;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotEmpty;
-
 import org.hibernate.validator.constraints.Length;
 
 import com.raphael.springbootionic.services.validation.EstoqueRequisicao;
@@ -15,9 +13,8 @@ public class EstoqueDTO implements Serializable {
 	private Integer secao;
 	private BebidaDTO bebida;
 	private Integer volume;
-
-	@NotEmpty(message = "Nome do responsável é obrigatório!")
-	@Length(min = 1, max = 120, message = "O tamanho do nome do responsável deve ser entre 1 e 120 caracteres!")
+	
+	@Length(min = 1, max = 100, message = "O tamanho do nome do responsável deve ser entre 1 e 100 caracteres!")
 	private String responsavel;
 
 	public EstoqueDTO() {

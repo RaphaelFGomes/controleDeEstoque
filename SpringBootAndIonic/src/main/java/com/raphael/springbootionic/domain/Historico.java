@@ -1,6 +1,7 @@
 package com.raphael.springbootionic.domain;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,7 @@ public class Historico implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String horario;
+	private LocalDate horarioLocalDate;
 	private String tipoRequisicao;
 	private Integer volume;
 	private String nomeBebida;
@@ -112,11 +114,21 @@ public class Historico implements Serializable {
 		return this;
 	}
 
+	public LocalDate getHorarioLocalDate() {
+		return horarioLocalDate;
+	}
+
+	public Historico setHorarioLocalDate(LocalDate horarioLocalDate) {
+		this.horarioLocalDate = horarioLocalDate;
+		return this;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((horario == null) ? 0 : horario.hashCode());
+		result = prime * result + ((horarioLocalDate == null) ? 0 : horarioLocalDate.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((marcaBebida == null) ? 0 : marcaBebida.hashCode());
 		result = prime * result + ((nomeBebida == null) ? 0 : nomeBebida.hashCode());
@@ -141,6 +153,11 @@ public class Historico implements Serializable {
 			if (other.horario != null)
 				return false;
 		} else if (!horario.equals(other.horario))
+			return false;
+		if (horarioLocalDate == null) {
+			if (other.horarioLocalDate != null)
+				return false;
+		} else if (!horarioLocalDate.equals(other.horarioLocalDate))
 			return false;
 		if (id == null) {
 			if (other.id != null)
@@ -184,5 +201,5 @@ public class Historico implements Serializable {
 			return false;
 		return true;
 	}
-
+	
 }
