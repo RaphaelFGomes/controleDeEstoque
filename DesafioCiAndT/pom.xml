@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.raphael.springbootionic</groupId>
-	<artifactId>SpringBootAndIonic</artifactId>
+	<artifactId>DesafioCiAndT</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>SpringBootAndIonic</name>
+	<name>DesafioCiAndT</name>
 	<description>Project for Spring Boot and Ionic</description>
 
 	<properties>
