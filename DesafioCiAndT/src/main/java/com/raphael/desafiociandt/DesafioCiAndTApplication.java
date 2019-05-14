@@ -27,7 +27,7 @@ public class DesafioCiAndTApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {	
 		Credenciais credenciais = new Credenciais()
 				.setEmail("raphaelg9@gmail.com")
-				.setSenha(pe.encode("test"))
+				.setSenha(pe.encode("teste"))
 				.addPerfil(Perfil.ADMIN);
 		
 		credenciaisRepositorio.save(credenciais);

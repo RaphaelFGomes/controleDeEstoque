@@ -13,6 +13,8 @@ import com.raphael.desafiociandt.domain.Historico;
 import com.raphael.desafiociandt.dto.HistoricoDTO;
 import com.raphael.desafiociandt.services.HistoricoService;
 
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping(value="/historico")
 public class HistoricoResources {
@@ -21,6 +23,7 @@ public class HistoricoResources {
 	private HistoricoService service;
 	
 	@PreAuthorize("hasAnyRole('ADMIN')")
+	@ApiOperation(value="Busca todas as requisições de entrada e saída do estoque que estão armazenadas no histórico")
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<Page<HistoricoDTO>> findPage(
 			@RequestParam(value="page", defaultValue="0") Integer page,

@@ -12,6 +12,8 @@ import com.raphael.desafiociandt.security.JWTUtil;
 import com.raphael.desafiociandt.security.UserSpringSecurity;
 import com.raphael.desafiociandt.services.UserService;
 
+import io.swagger.annotations.ApiOperation;
+
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -20,6 +22,7 @@ public class AuthResources {
 	@Autowired
 	private JWTUtil jwtUtil;
 
+	@ApiOperation(value="Pega um novo token através do token antigo para fazer a autenticação das APIs")
 	@RequestMapping(value = "/refresh_token", method = RequestMethod.POST)
 	public ResponseEntity<Void> refreshToken(HttpServletResponse response) {
 		UserSpringSecurity user = UserService.authenticated();

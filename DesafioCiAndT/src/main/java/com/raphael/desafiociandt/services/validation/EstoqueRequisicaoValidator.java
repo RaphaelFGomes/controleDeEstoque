@@ -26,8 +26,7 @@ public class EstoqueRequisicaoValidator implements ConstraintValidator<EstoqueRe
 	@Override
 	public void initialize(EstoqueRequisicao ann) {
 	}
-
-	@SuppressWarnings("unlikely-arg-type")
+	
 	@Override
 	public boolean isValid(EstoqueDTO objDto, ConstraintValidatorContext context) {
 		List<FieldMessage> list = new ArrayList<>();

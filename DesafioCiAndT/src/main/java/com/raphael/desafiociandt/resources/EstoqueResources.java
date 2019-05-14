@@ -23,6 +23,10 @@ import com.raphael.desafiociandt.dto.RespostaDTO;
 import com.raphael.desafiociandt.dto.SecaoDisponivelDTO;
 import com.raphael.desafiociandt.services.EstoqueService;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping(value="/estoque")
 public class EstoqueResources {
@@ -31,6 +35,8 @@ public class EstoqueResources {
 	private EstoqueService service;
 	
 	@PreAuthorize("hasAnyRole('ADMIN')")
+	@ApiOperation(value="Busca uma bebida específica por ID")
+	@ApiResponses(value = {@ApiResponse(code = 404, message = "Não existe bebida com o ID específico")})
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public ResponseEntity<EstoqueDTO> consultaBebiba(@PathVariable Integer id) {
 		Estoque obj = service.consultBebibaPorId(id);
@@ -39,6 +45,8 @@ public class EstoqueResources {
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN')")
+	@ApiOperation(value="Busca todas as bebidas armazenadas em uma determinada seção")
+	@ApiResponses(value = {@ApiResponse(code = 404, message = "Não existe bebida cadastrada para a seção específica")})
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<List<EstoqueDTO>> consultaEstoquePorSecaoPage(@RequestParam(value="secao") Integer secao) {
 		List<Estoque> list = service.consultaEstoquePorSecao(secao);
@@ -47,6 +55,7 @@ public class EstoqueResources {
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN')")
+	@ApiOperation(value="Busca o volume total armazenado no estoque por um determinado tipo de bebida")
 	@RequestMapping(value="/volumetotalestoque", method=RequestMethod.GET)
 	public ResponseEntity<RespostaDTO> consultaVolumeTotalEstoquePorTipoBebida(@RequestParam(value="tipobebida") Integer tipoBebida) {
 		int volumeTotal = service.consultaVolumeTotalEstoquePorTipoBebida(tipoBebida);
@@ -60,6 +69,7 @@ public class EstoqueResources {
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN')")
+	@ApiOperation(value="Busca o volume total de um determinado tipo de bebida em uma determinada seção")
 	@RequestMapping(value="/volumetotalsecao", method=RequestMethod.GET)
 	public ResponseEntity<RespostaDTO> consultaVolumeByTipoBebidaAndSecao(
 			@RequestParam(value="tipobebida") Integer tipoBebida,
@@ -75,6 +85,7 @@ public class EstoqueResources {
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN')")
+	@ApiOperation(value="Busca todas as seções disponíveis e seus tipos de bebidas disponíveis para um possível volume de bebida")
 	@RequestMapping(value="/secoesdisponiveisporvolume", method=RequestMethod.GET)
 	public ResponseEntity<RespostaDTO> consultaSecoesDisponiveisPorTipoBebidaSecao(@RequestParam(value="volume") Integer volume) {
 		List<SecaoDisponivelDTO> secoesDisponiveis = service.consultaSecoesDisponiveisPorVolume(volume);
@@ -110,6 +121,7 @@ public class EstoqueResources {
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN')")
+	@ApiOperation(value="Busca todas as seções disponíveis para venda de um determinado tipo de bebida")
 	@RequestMapping(value = "/secoesdisponiveisvenda", method = RequestMethod.GET)
 	public ResponseEntity<RespostaDTO> consultaSecoesDisponiveisVendaPorTipoBebida(
 			@RequestParam(value = "tipobebida") Integer tipoBebida) {
@@ -155,6 +167,18 @@ public class EstoqueResources {
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN')")
+	@ApiResponses(value = {
+			@ApiResponse(code = 422, message = "Seção é obrigatória! -ou- Seção deve ser os números inteiros 1, 2, 3, 4 ou 5!"
+											 + " ---ou--- Bebida é obrigatório!"
+											 + " ---ou--- Tipo da bebida é obrigatório!"
+											 + " ---ou--- Tipo da bebida é obrigatório!"
+											 + " ---ou--- Tipo da bebida deve ser o número inteiro 1 para alcoólico ou 2 para não alcoólico!"
+											 + " ---ou--- O volume deve ser entre o número inteiro 1 e 500 para bebidas alcoólicas!"
+											 + " ---ou--- O volume deve ser entre o número inteiro 1 e 400 para bebidas não alcoólicas!"
+											 + " ---ou--- Seção específica foi ocupada por outro tipo de bebida hoje, por favor tente no dia seguinte!"
+											 + " ---ou--- Não pode armazenar esse volume pois ultrapassa o limite de 500 para bebidas alcoólicas na seção específica!"
+											 + " ---ou--- Não pode armazenar esse volume pois ultrapassa o limite de 400 para bebidas não alcoólicas na seção específica!"),})
+	@ApiOperation(value="Armazena uma bebida no estoque em uma determinada seção")
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<RespostaDTO> insere(@Valid @RequestBody EstoqueDTO objDTO) {
 		Estoque obj = service.fromDTO(objDTO);
@@ -168,6 +192,8 @@ public class EstoqueResources {
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN')")
+	@ApiResponses(value = {@ApiResponse(code = 404, message = "Não existe bebida com o ID específico")})
+	@ApiOperation(value="Retira uma bebida do estoque")
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
 	public ResponseEntity<RespostaDTO> remove(@PathVariable Integer id) {
 		service.deleteById(id);
