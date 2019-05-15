@@ -1,0 +1,2531 @@
+{
+	"info": {
+		"_postman_id": "00b21586-7a6b-467d-9d83-989ac98a847a",
+		"name": "Estoque Testes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Testes (Rodar apenas essa pasta)",
+			"item": [
+				{
+					"name": "Adicionando uma bebida para testar o get",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+								"exec": [
+									"const echoPostRequest = {",
+									"    url: pm.environment.get(\"local\") + '/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            email: pm.environment.get(\"email\"),",
+									"            senha: pm.environment.get(\"senha\")})",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest (echoPostRequest, function(err, response) {",
+									"    let data = JSON.stringify(response);",
+									"    let dataParsed = JSON.parse(data);",
+									"    let headerString = JSON.stringify(dataParsed.header);",
+									"    let headerParsed = JSON.parse(headerString);",
+									"    let token = headerParsed[0].value;",
+									"    pm.environment.set(\"auth\", token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+								"exec": [
+									"tests[\"Status code retornado foi 201\"] = responseCode.code === 201;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"secao\": 1,\r\n\t\"bebida\": {\r\n\t\t\"nome\": \"Skol\",\r\n\t\t\"marca\": \"Ambev\",\r\n\t\t\"tipo\": 1\r\n\t},\r\n\t\"volume\": 1,\r\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\r\n}"
+						},
+						"url": {
+							"raw": "{{localEstoque}}",
+							"host": [
+								"{{localEstoque}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscando a bebida de ID 1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+								"exec": [
+									"const echoPostRequest = {",
+									"    url: pm.environment.get(\"local\") + '/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            email: pm.environment.get(\"email\"),",
+									"            senha: pm.environment.get(\"senha\")})",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest (echoPostRequest, function(err, response) {",
+									"    let data = JSON.stringify(response);",
+									"    let dataParsed = JSON.parse(data);",
+									"    let headerString = JSON.stringify(dataParsed.header);",
+									"    let headerParsed = JSON.parse(headerString);",
+									"    let token = headerParsed[0].value;",
+									"    pm.environment.set(\"auth\", token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+								"exec": [
+									"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{localEstoque}}/1",
+							"host": [
+								"{{localEstoque}}"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consulta estoque por secao",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+								"exec": [
+									"const echoPostRequest = {",
+									"    url: pm.environment.get(\"local\") + '/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            email: pm.environment.get(\"email\"),",
+									"            senha: pm.environment.get(\"senha\")})",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest (echoPostRequest, function(err, response) {",
+									"    let data = JSON.stringify(response);",
+									"    let dataParsed = JSON.parse(data);",
+									"    let headerString = JSON.stringify(dataParsed.header);",
+									"    let headerParsed = JSON.parse(headerString);",
+									"    let token = headerParsed[0].value;",
+									"    pm.environment.set(\"auth\", token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+								"exec": [
+									"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{localEstoque}}?secao=1",
+							"host": [
+								"{{localEstoque}}"
+							],
+							"query": [
+								{
+									"key": "secao",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consulta volume total estoque por tipo bebida",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+								"exec": [
+									"const echoPostRequest = {",
+									"    url: pm.environment.get(\"local\") + '/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            email: pm.environment.get(\"email\"),",
+									"            senha: pm.environment.get(\"senha\")})",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest (echoPostRequest, function(err, response) {",
+									"    let data = JSON.stringify(response);",
+									"    let dataParsed = JSON.parse(data);",
+									"    let headerString = JSON.stringify(dataParsed.header);",
+									"    let headerParsed = JSON.parse(headerString);",
+									"    let token = headerParsed[0].value;",
+									"    pm.environment.set(\"auth\", token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+								"exec": [
+									"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{localEstoque}}/volumetotalestoque?tipobebida=1",
+							"host": [
+								"{{localEstoque}}"
+							],
+							"path": [
+								"volumetotalestoque"
+							],
+							"query": [
+								{
+									"key": "tipobebida",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consulta volume total estoque por tipo bebida",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+								"exec": [
+									"const echoPostRequest = {",
+									"    url: pm.environment.get(\"local\") + '/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            email: pm.environment.get(\"email\"),",
+									"            senha: pm.environment.get(\"senha\")})",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest (echoPostRequest, function(err, response) {",
+									"    let data = JSON.stringify(response);",
+									"    let dataParsed = JSON.parse(data);",
+									"    let headerString = JSON.stringify(dataParsed.header);",
+									"    let headerParsed = JSON.parse(headerString);",
+									"    let token = headerParsed[0].value;",
+									"    pm.environment.set(\"auth\", token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+								"exec": [
+									"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{localEstoque}}/volumetotalsecao?tipobebida=1&secao=1",
+							"host": [
+								"{{localEstoque}}"
+							],
+							"path": [
+								"volumetotalsecao"
+							],
+							"query": [
+								{
+									"key": "tipobebida",
+									"value": "1"
+								},
+								{
+									"key": "secao",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consulta secoes disponiveis por tipo bebida secao",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+								"exec": [
+									"const echoPostRequest = {",
+									"    url: pm.environment.get(\"local\") + '/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            email: pm.environment.get(\"email\"),",
+									"            senha: pm.environment.get(\"senha\")})",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest (echoPostRequest, function(err, response) {",
+									"    let data = JSON.stringify(response);",
+									"    let dataParsed = JSON.parse(data);",
+									"    let headerString = JSON.stringify(dataParsed.header);",
+									"    let headerParsed = JSON.parse(headerString);",
+									"    let token = headerParsed[0].value;",
+									"    pm.environment.set(\"auth\", token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+								"exec": [
+									"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{localEstoque}}/secoesdisponiveisporvolume?volume=1",
+							"host": [
+								"{{localEstoque}}"
+							],
+							"path": [
+								"secoesdisponiveisporvolume"
+							],
+							"query": [
+								{
+									"key": "volume",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consulta secoes disponiveis venda por tipo bebida",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+								"exec": [
+									"const echoPostRequest = {",
+									"    url: pm.environment.get(\"local\") + '/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            email: pm.environment.get(\"email\"),",
+									"            senha: pm.environment.get(\"senha\")})",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest (echoPostRequest, function(err, response) {",
+									"    let data = JSON.stringify(response);",
+									"    let dataParsed = JSON.parse(data);",
+									"    let headerString = JSON.stringify(dataParsed.header);",
+									"    let headerParsed = JSON.parse(headerString);",
+									"    let token = headerParsed[0].value;",
+									"    pm.environment.set(\"auth\", token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+								"exec": [
+									"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{localEstoque}}/secoesdisponiveisvenda?tipobebida=1",
+							"host": [
+								"{{localEstoque}}"
+							],
+							"path": [
+								"secoesdisponiveisvenda"
+							],
+							"query": [
+								{
+									"key": "tipobebida",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete Testes (Rodar apenas essa pasta)",
+			"item": [
+				{
+					"name": "Inserindo uma bebida para ser deletada depois",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+								"exec": [
+									"const echoPostRequest = {",
+									"    url: pm.environment.get(\"local\") + '/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            email: pm.environment.get(\"email\"),",
+									"            senha: pm.environment.get(\"senha\")})",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest (echoPostRequest, function(err, response) {",
+									"    let data = JSON.stringify(response);",
+									"    let dataParsed = JSON.parse(data);",
+									"    let headerString = JSON.stringify(dataParsed.header);",
+									"    let headerParsed = JSON.parse(headerString);",
+									"    let token = headerParsed[0].value;",
+									"    pm.environment.set(\"auth\", token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+								"exec": [
+									"tests[\"Status code retornado foi 201\"] = responseCode.code === 201;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 1\n\t},\n\t\"volume\": 3,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+						},
+						"url": {
+							"raw": "{{localEstoque}}",
+							"host": [
+								"{{localEstoque}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletando uma bebida específica",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+								"exec": [
+									"const echoPostRequest = {",
+									"    url: pm.environment.get(\"local\") + '/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            email: pm.environment.get(\"email\"),",
+									"            senha: pm.environment.get(\"senha\")})",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest (echoPostRequest, function(err, response) {",
+									"    let data = JSON.stringify(response);",
+									"    let dataParsed = JSON.parse(data);",
+									"    let headerString = JSON.stringify(dataParsed.header);",
+									"    let headerParsed = JSON.parse(headerString);",
+									"    let token = headerParsed[0].value;",
+									"    pm.environment.set(\"auth\", token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+								"exec": [
+									"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{localEstoque}}/1",
+							"host": [
+								"{{localEstoque}}"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletando com ID errado",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+								"exec": [
+									"const echoPostRequest = {",
+									"    url: pm.environment.get(\"local\") + '/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            email: pm.environment.get(\"email\"),",
+									"            senha: pm.environment.get(\"senha\")})",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest (echoPostRequest, function(err, response) {",
+									"    let data = JSON.stringify(response);",
+									"    let dataParsed = JSON.parse(data);",
+									"    let headerString = JSON.stringify(dataParsed.header);",
+									"    let headerParsed = JSON.parse(headerString);",
+									"    let token = headerParsed[0].value;",
+									"    pm.environment.set(\"auth\", token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+								"exec": [
+									"tests[\"Status code retornado foi 404\"] = responseCode.code === 404;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{localEstoque}}/33",
+							"host": [
+								"{{localEstoque}}"
+							],
+							"path": [
+								"33"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post Testes",
+			"item": [
+				{
+					"name": "Post Secao Utilizadas Testes (Rodar apenas essa pasta)",
+					"item": [
+						{
+							"name": "Inserindo bebida alcoolica na seção 1",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 201\"] = responseCode.code === 201;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 1\n\t},\n\t\"volume\": 1,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo bebida não alcoolica na seção 1",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 2\n\t},\n\t\"volume\": 1,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Deletando bebida ID 1 da seção 1",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{localEstoque}}/1",
+									"host": [
+										"{{localEstoque}}"
+									],
+									"path": [
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo bebida não alcoolica na seção 1 de novo",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 2\n\t},\n\t\"volume\": 1,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Post Volume Cheio Testes (Rodar apenas essa pasta)",
+					"item": [
+						{
+							"name": "Inserindo 500 no volume de bebida alcoolica em uma secao 1",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 201\"] = responseCode.code === 201;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 1\n\t},\n\t\"volume\": 500,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo 1 no volume de bebida alcoolica em uma secao 1",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 1\n\t},\n\t\"volume\": 1,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo 400 no volume de bebida alcoolica em uma secao 2",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 201\"] = responseCode.code === 201;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 2,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 2\n\t},\n\t\"volume\": 400,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo 1 no volume de bebida alcoolica em uma secao 2",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 2,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 2\n\t},\n\t\"volume\": 1,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Post Validações Json Testes",
+					"item": [
+						{
+							"name": "Inserindo correto no estoque",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 201\"] = responseCode.code === 201;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{auth}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 1\n\t},\n\t\"volume\": 30,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo com secao errada",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 9,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 1\n\t},\n\t\"volume\": 30,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo sem secao",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 400\"] = responseCode.code === 400;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": ,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 1\n\t},\n\t\"volume\": 30,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo com secao negativa",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": -1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 1\n\t},\n\t\"volume\": 30,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo sem bebiba",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"volume\": 30,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo com bebiba sem nome",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 201\"] = responseCode.code === 201;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 1\n\t},\n\t\"volume\": 30,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo com bebiba sem marca",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 201\"] = responseCode.code === 201;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"tipo\": 1\n\t},\n\t\"volume\": 30,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo com bebiba sem tipo",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\"\n\t},\n\t\"volume\": 30,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo com bebiba tipo errado",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 5\n\t},\n\t\"volume\": 30,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo com bebiba tipo negativo",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": -2\n\t},\n\t\"volume\": 30,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo volume maior de 500 para bebida alcoólica",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 1\n\t},\n\t\"volume\": 501,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo volume maior de 400 para bebida não alcoólica",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 2\n\t},\n\t\"volume\": 401,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo com volume negativo",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 1\n\t},\n\t\"volume\": -1,\n\t\"responsavel\": \"Raphael Ferreira Gomes\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inserindo com o campo responsavel vazio",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+										"exec": [
+											"const echoPostRequest = {",
+											"    url: pm.environment.get(\"local\") + '/login',",
+											"    method: 'POST',",
+											"    header: {",
+											"        'content-type': 'application/json'",
+											"    },",
+											"    body: {",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify({",
+											"            email: pm.environment.get(\"email\"),",
+											"            senha: pm.environment.get(\"senha\")})",
+											"    }",
+											"};",
+											"",
+											"pm.sendRequest (echoPostRequest, function(err, response) {",
+											"    let data = JSON.stringify(response);",
+											"    let dataParsed = JSON.parse(data);",
+											"    let headerString = JSON.stringify(dataParsed.header);",
+											"    let headerParsed = JSON.parse(headerString);",
+											"    let token = headerParsed[0].value;",
+											"    pm.environment.set(\"auth\", token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+										"exec": [
+											"tests[\"Status code retornado foi 422\"] = responseCode.code === 422;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{auth}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"secao\": 1,\n\t\"bebida\": {\n\t\t\"nome\": \"Skol\",\n\t\t\"marca\": \"Ambev\",\n\t\t\"tipo\": 1\n\t},\n\t\"volume\": 3,\n\t\"responsavel\": \"\"\n}"
+								},
+								"url": {
+									"raw": "{{localEstoque}}",
+									"host": [
+										"{{localEstoque}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Testando o refresh token",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+								"exec": [
+									"const echoPostRequest = {",
+									"    url: pm.environment.get(\"local\") + '/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            email: pm.environment.get(\"email\"),",
+									"            senha: pm.environment.get(\"senha\")})",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest (echoPostRequest, function(err, response) {",
+									"    let data = JSON.stringify(response);",
+									"    let dataParsed = JSON.parse(data);",
+									"    let headerString = JSON.stringify(dataParsed.header);",
+									"    let headerParsed = JSON.parse(headerString);",
+									"    let token = headerParsed[0].value;",
+									"    pm.environment.set(\"auth\", token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+								"exec": [
+									"tests[\"Status code retornado foi 204\"] = responseCode.code === 204;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{local}}/auth/refresh_token",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"auth",
+								"refresh_token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -48,7 +48,7 @@ public class EstoqueResources {
 	@ApiOperation(value="Busca todas as bebidas armazenadas em uma determinada seção")
 	@ApiResponses(value = {@ApiResponse(code = 404, message = "Não existe bebida cadastrada para a seção específica")})
 	@RequestMapping(method=RequestMethod.GET)
-	public ResponseEntity<List<EstoqueDTO>> consultaEstoquePorSecaoPage(@RequestParam(value="secao") Integer secao) {
+	public ResponseEntity<List<EstoqueDTO>> consultaEstoquePorSecao(@RequestParam(value="secao") Integer secao) {
 		List<Estoque> list = service.consultaEstoquePorSecao(secao);
 		List<EstoqueDTO> listDto = service.fromListEstoque(list);
 		return ResponseEntity.ok().body(listDto);

@@ -1,0 +1,527 @@
+{
+	"info": {
+		"_postman_id": "b0af38eb-2eb2-4fc1-be75-4ad5e58aed8a",
+		"name": "Historico Testes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Buscando historico sem parametros",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+						"exec": [
+							"const echoPostRequest = {",
+							"    url: pm.environment.get(\"local\") + '/login',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify({",
+							"            email: pm.environment.get(\"email\"),",
+							"            senha: pm.environment.get(\"senha\")})",
+							"    }",
+							"};",
+							"",
+							"pm.sendRequest (echoPostRequest, function(err, response) {",
+							"    let data = JSON.stringify(response);",
+							"    let dataParsed = JSON.parse(data);",
+							"    let headerString = JSON.stringify(dataParsed.header);",
+							"    let headerParsed = JSON.parse(headerString);",
+							"    let token = headerParsed[0].value;",
+							"    pm.environment.set(\"auth\", token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+						"exec": [
+							"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{auth}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{localHistorico}}",
+					"host": [
+						"{{localHistorico}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscando historico com parametro page",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+						"exec": [
+							"const echoPostRequest = {",
+							"    url: pm.environment.get(\"local\") + '/login',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify({",
+							"            email: pm.environment.get(\"email\"),",
+							"            senha: pm.environment.get(\"senha\")})",
+							"    }",
+							"};",
+							"",
+							"pm.sendRequest (echoPostRequest, function(err, response) {",
+							"    let data = JSON.stringify(response);",
+							"    let dataParsed = JSON.parse(data);",
+							"    let headerString = JSON.stringify(dataParsed.header);",
+							"    let headerParsed = JSON.parse(headerString);",
+							"    let token = headerParsed[0].value;",
+							"    pm.environment.set(\"auth\", token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+						"exec": [
+							"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{auth}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{localHistorico}}?page=0",
+					"host": [
+						"{{localHistorico}}"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscando historico com parametros page e LinesPerPage",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+						"exec": [
+							"const echoPostRequest = {",
+							"    url: pm.environment.get(\"local\") + '/login',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify({",
+							"            email: pm.environment.get(\"email\"),",
+							"            senha: pm.environment.get(\"senha\")})",
+							"    }",
+							"};",
+							"",
+							"pm.sendRequest (echoPostRequest, function(err, response) {",
+							"    let data = JSON.stringify(response);",
+							"    let dataParsed = JSON.parse(data);",
+							"    let headerString = JSON.stringify(dataParsed.header);",
+							"    let headerParsed = JSON.parse(headerString);",
+							"    let token = headerParsed[0].value;",
+							"    pm.environment.set(\"auth\", token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+						"exec": [
+							"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{auth}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{localHistorico}}?page=0&LinesPerPage=1",
+					"host": [
+						"{{localHistorico}}"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "LinesPerPage",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscando historico com parametros page, LinesPerPage e orderBy (secao)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+						"exec": [
+							"const echoPostRequest = {",
+							"    url: pm.environment.get(\"local\") + '/login',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify({",
+							"            email: pm.environment.get(\"email\"),",
+							"            senha: pm.environment.get(\"senha\")})",
+							"    }",
+							"};",
+							"",
+							"pm.sendRequest (echoPostRequest, function(err, response) {",
+							"    let data = JSON.stringify(response);",
+							"    let dataParsed = JSON.parse(data);",
+							"    let headerString = JSON.stringify(dataParsed.header);",
+							"    let headerParsed = JSON.parse(headerString);",
+							"    let token = headerParsed[0].value;",
+							"    pm.environment.set(\"auth\", token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+						"exec": [
+							"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{auth}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{localHistorico}}?page=0&LinesPerPage=1&orderBy=secao",
+					"host": [
+						"{{localHistorico}}"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "LinesPerPage",
+							"value": "1"
+						},
+						{
+							"key": "orderBy",
+							"value": "secao"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscando historico com parametros page, LinesPerPage e orderBy (horario)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+						"exec": [
+							"const echoPostRequest = {",
+							"    url: pm.environment.get(\"local\") + '/login',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify({",
+							"            email: pm.environment.get(\"email\"),",
+							"            senha: pm.environment.get(\"senha\")})",
+							"    }",
+							"};",
+							"",
+							"pm.sendRequest (echoPostRequest, function(err, response) {",
+							"    let data = JSON.stringify(response);",
+							"    let dataParsed = JSON.parse(data);",
+							"    let headerString = JSON.stringify(dataParsed.header);",
+							"    let headerParsed = JSON.parse(headerString);",
+							"    let token = headerParsed[0].value;",
+							"    pm.environment.set(\"auth\", token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+						"exec": [
+							"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{auth}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{localHistorico}}?page=0&LinesPerPage=1&orderBy=horario",
+					"host": [
+						"{{localHistorico}}"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "LinesPerPage",
+							"value": "1"
+						},
+						{
+							"key": "orderBy",
+							"value": "horario"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscando historico com parametros page, LinesPerPage, orderBy (horario) e direction",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "28ccf859-9ffd-4a27-bcdf-402cdd2a88da",
+						"exec": [
+							"const echoPostRequest = {",
+							"    url: pm.environment.get(\"local\") + '/login',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify({",
+							"            email: pm.environment.get(\"email\"),",
+							"            senha: pm.environment.get(\"senha\")})",
+							"    }",
+							"};",
+							"",
+							"pm.sendRequest (echoPostRequest, function(err, response) {",
+							"    let data = JSON.stringify(response);",
+							"    let dataParsed = JSON.parse(data);",
+							"    let headerString = JSON.stringify(dataParsed.header);",
+							"    let headerParsed = JSON.parse(headerString);",
+							"    let token = headerParsed[0].value;",
+							"    pm.environment.set(\"auth\", token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "79ea43a3-567b-4c70-923b-d4a32b0b6fb7",
+						"exec": [
+							"tests[\"Status code retornado foi 200\"] = responseCode.code === 200;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{auth}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{localHistorico}}?page=0&LinesPerPage=1&orderBy=horario&direction=ASC",
+					"host": [
+						"{{localHistorico}}"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "LinesPerPage",
+							"value": "1"
+						},
+						{
+							"key": "orderBy",
+							"value": "horario"
+						},
+						{
+							"key": "direction",
+							"value": "ASC"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
